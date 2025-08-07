@@ -1,0 +1,154 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Survey Handler Lambda with DynamoDB
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, staging, prod]
+  S3Bucket:
+    Type: String
+    Description: S3 bucket containing the Lambda deployment package
+  S3Key:
+    Type: String
+    Default: function.zip
+    Description: S3 key for the Lambda deployment package
+
+
+Resources:
+  # DynamoDB Tables
+  SurveysTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub Surveys-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: typeVersion
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: TypeVersionIndex
+          KeySchema:
+            - AttributeName: typeVersion
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  AgreementsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub Agreements-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: version
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: VersionIndex
+          KeySchema:
+            - AttributeName: version
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  # Lambda Execution Role
+  SurveyHandlerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:DescribeTable
+                Resource:
+                  - !GetAtt SurveysTable.Arn
+                  - !Sub "${SurveysTable.Arn}/index/*"
+                  - !GetAtt AgreementsTable.Arn
+                  - !Sub "${AgreementsTable.Arn}/index/*"
+
+  # Lambda Function
+  SurveyHandlerFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: 
+      - SurveysTable
+      - AgreementsTable
+    Properties:
+      FunctionName: !Sub survey-handler-${Environment}
+      Runtime: provided.al2023
+      Architectures:
+        - arm64
+      CodeUri: 
+        Bucket: !Ref S3Bucket
+        Key: !Ref S3Key
+      Handler: io.quarkus.amazon.lambda.http.LambdaHttpHandler
+      MemorySize: 256
+      Timeout: 30
+      Role: !GetAtt SurveyHandlerRole.Arn
+      Environment:
+        Variables:
+          DISABLE_SIGNAL_HANDLERS: true
+          JAVA_TOOL_OPTIONS: -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+          QUARKUS_DYNAMODB_AWS_REGION: !Ref AWS::Region
+          SURVEYS_TABLE_NAME: !Sub "Surveys-${Environment}"
+          AGREEMENTS_TABLE_NAME: !Sub "Agreements-${Environment}"
+          QUARKUS_DYNAMODB_AWS_CREDENTIALS_TYPE: default
+      Events:
+        HttpApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+
+
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub 'https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/'
+    Export:
+      Name: !Sub SurveyHandlerApi-${Environment}
+  
+  SurveyHandlerFunctionArn:
+    Description: Survey Handler Lambda Function ARN
+    Value: !GetAtt SurveyHandlerFunction.Arn
+    Export:
+      Name: !Sub SurveyHandlerFunction-${Environment}
+  
+  SurveysTableName:
+    Description: DynamoDB Surveys table name
+    Value: !Ref SurveysTable
+    Export:
+      Name: !Sub SurveysTable-${Environment}
+  
+  AgreementsTableName:
+    Description: DynamoDB Agreements table name
+    Value: !Ref AgreementsTable
+    Export:
+      Name: !Sub AgreementsTable-${Environment}
