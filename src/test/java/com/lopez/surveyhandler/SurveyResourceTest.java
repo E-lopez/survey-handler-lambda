@@ -12,7 +12,7 @@ public class SurveyResourceTest {
     @Test
     public void testHealthEndpoint() {
         given()
-          .when().get("/api/v1/health")
+          .when().get("/health")
           .then()
              .statusCode(200)
              .body(containsString("healthy"));
