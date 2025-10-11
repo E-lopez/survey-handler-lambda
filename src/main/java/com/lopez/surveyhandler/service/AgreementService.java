@@ -21,7 +21,7 @@ import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
 @ApplicationScoped
 public class AgreementService {
-    private static final String AGREEMENT_TABLE_NAME = "Agreements-dev";
+    private static final String AGREEMENT_TABLE_NAME = "Agreements-prod";
     private static final String VERSION_INDEX = "VersionIndex";
 
     private static final Logger logger = Logger.getLogger(AgreementService.class);
@@ -29,7 +29,8 @@ public class AgreementService {
 
     @Inject
     public AgreementService(DynamoDbEnhancedClient dynamoEnhancedClient) {
-        this.agreementTable = dynamoEnhancedClient.table(AGREEMENT_TABLE_NAME, TableSchema.fromClass(AgreementDto.class));
+        this.agreementTable = dynamoEnhancedClient.table(AGREEMENT_TABLE_NAME,
+                TableSchema.fromClass(AgreementDto.class));
     }
 
     public ApiResponse<List<AgreementDto>> fetchAllAgreements() {
@@ -58,11 +59,11 @@ public class AgreementService {
                     .queryConditional(condition)
                     .limit(1)
                     .build();
-            
+
             List<AgreementDto> results = versionIndex.query(request).stream()
                     .flatMap(page -> page.items().stream())
                     .toList();
-            
+
             if (results.isEmpty()) {
                 return ApiResponse.error("No agreement found with that version!");
             }
