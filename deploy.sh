@@ -6,11 +6,11 @@ set -e
 
 # Configuration
 ENVIRONMENT=${1:-dev}
-S3_BUCKET="survey-handler-lambda-20250729-193600"  # Update with your S3 bucket name
+S3_BUCKET="survey-handler-lambda-${ENVIRONMENT}"  # Update with your S3 bucket name
 FUNCTION_NAME="survey-handler-${ENVIRONMENT}"
 STACK_NAME="survey-handler-${ENVIRONMENT}"
 
-echo "Deploying Survey Handler Lambda for environment: $ENVIRONMENT"
+echo "Deploying Survey Handler Lambda for environment: $S3_BUCKET"
 
 # Build the native executable
 echo "Building native executable..."

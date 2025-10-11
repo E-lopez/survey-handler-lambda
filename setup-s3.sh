@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Setup S3 bucket for Lambda deployments
-
-BUCKET_NAME="survey-handler-lambda-$(date +%Y%m%d-%H%M%S)"
+ENVIRONMENT=${1:-dev}
+BUCKET_NAME="survey-handler-lambda-${ENVIRONMENT}"
 REGION="us-east-1"
 
 echo "Setting up S3 bucket: $BUCKET_NAME"
