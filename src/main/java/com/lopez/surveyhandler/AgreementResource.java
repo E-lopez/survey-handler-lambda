@@ -33,14 +33,25 @@ public class AgreementResource {
         try {
             ApiResponse<?> result = agreementService.fetchAllAgreements();
             if (result.isSuccess()) {
-                return Response.ok(result).build();
+                return Response.ok(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity(result).build();
+                return Response.status(Response.Status.NOT_FOUND).entity(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             }
         } catch (Exception e) {
             logger.error("Error fetching agreements", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ApiResponse.error("Internal server error"))
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                     .build();
         }
     }
@@ -51,14 +62,25 @@ public class AgreementResource {
         try {
             ApiResponse<?> result = agreementService.fetchAgreementByVersion(version);
             if (result.isSuccess()) {
-                return Response.ok(result).build();
+                return Response.ok(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity(result).build();
+                return Response.status(Response.Status.NOT_FOUND).entity(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             }
         } catch (Exception e) {
             logger.error("Error fetching agreement by version", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ApiResponse.error("Internal server error"))
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                     .build();
         }
     }
@@ -74,14 +96,25 @@ public class AgreementResource {
             
             ApiResponse<?> result = agreementService.registerAgreement(agreementDto);
             if (result.isSuccess()) {
-                return Response.status(Response.Status.CREATED).entity(result).build();
+                return Response.status(Response.Status.CREATED).entity(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             } else {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             }
         } catch (Exception e) {
             logger.error("Error creating agreement", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ApiResponse.error("Failed to create agreement"))
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                     .build();
         }
     }
@@ -90,11 +123,18 @@ public class AgreementResource {
     public Response clearCollection() {
         try {
             ApiResponse<?> result = agreementService.clearAll();
-            return Response.ok(result).build();
+            return Response.ok(result)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                .build();
         } catch (Exception e) {
             logger.error("Error clearing agreements", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ApiResponse.error("Failed to clear collection"))
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                     .build();
         }
     }

@@ -33,14 +33,25 @@ public class SurveyResource {
         try {
             ApiResponse<?> result = surveyService.fetchSurveys();
             if (result.isSuccess()) {
-                return Response.ok(result).build();
+                return Response.ok(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity(result).build();
+                return Response.status(Response.Status.NOT_FOUND).entity(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             }
         } catch (Exception e) {
             logger.error("Error fetching surveys", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ApiResponse.error("Internal server error"))
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                     .build();
         }
     }
@@ -51,14 +62,25 @@ public class SurveyResource {
         try {
             ApiResponse<?> result = surveyService.fetchModelByTypeVersion(typeVersion);
             if (result.isSuccess()) {
-                return Response.ok(result).build();
+                return Response.ok(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity(result).build();
+                return Response.status(Response.Status.NOT_FOUND).entity(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             }
         } catch (Exception e) {
             logger.error("Error fetching survey by type version", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ApiResponse.error("Internal server error"))
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                     .build();
         }
     }
@@ -69,6 +91,9 @@ public class SurveyResource {
             if (model == null) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity(ApiResponse.error("Request body is required"))
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                        .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                         .build();
             }
 
@@ -76,14 +101,25 @@ public class SurveyResource {
             ApiResponse<?> result = surveyService.registerModel(persistent);
             
             if (result.isSuccess()) {
-                return Response.status(Response.Status.CREATED).entity(result).build();
+                return Response.status(Response.Status.CREATED).entity(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             } else {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                    .build();
             }
         } catch (Exception e) {
             logger.error("Error creating survey", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ApiResponse.error("Failed to create survey"))
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                     .build();
         }
     }
@@ -92,11 +128,18 @@ public class SurveyResource {
     public Response clearCollection() {
         try {
             ApiResponse<?> result = surveyService.clearAll();
-            return Response.ok(result).build();
+            return Response.ok(result)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
+                .build();
         } catch (Exception e) {
             logger.error("Error clearing surveys", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ApiResponse.error("Failed to clear collection"))
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With")
                     .build();
         }
     }

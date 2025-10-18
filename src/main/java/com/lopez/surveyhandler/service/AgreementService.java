@@ -21,7 +21,7 @@ import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
 @ApplicationScoped
 public class AgreementService {
-    private static final String AGREEMENT_TABLE_NAME = "Agreements-prod";
+    private static final String AGREEMENT_TABLE_NAME = System.getenv().getOrDefault("AGREEMENTS_TABLE_NAME", "Agreements-dev");
     private static final String VERSION_INDEX = "VersionIndex";
 
     private static final Logger logger = Logger.getLogger(AgreementService.class);

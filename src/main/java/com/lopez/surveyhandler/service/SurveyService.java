@@ -21,7 +21,7 @@ import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
 @ApplicationScoped
 public class SurveyService {
-    private static final String SURVEY_TABLE_NAME = "Surveys-prod";
+    private static final String SURVEY_TABLE_NAME = System.getenv().getOrDefault("SURVEYS_TABLE_NAME", "Surveys-dev");
     private static final String TYPE_VERSION_INDEX = "TypeVersionIndex";
 
     private static final Logger logger = Logger.getLogger(SurveyService.class);
